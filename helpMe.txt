@@ -1,0 +1,120 @@
+Dear EE 209/282 Network Security Designers:  
+
+This file provides  helpful hints and information to  help you "get-started"  in using OpenSSL library. Followed by  brief descriptions for the main functions that you  would need to use in your project. 
+
+==Most Unix/Linux paltforms and  flavors  have OpenSSL package installed  by default. In the Cisco lab, Room ENG490,  with Ubuntu Linux,  OpenSSl is installed --on all the machines. You can  found the location or path of OpenSSL using cmd:
+ciscolab16@ubuntu:~$ which openssl
+/usr/bin/openssl
+
+==However default OpenSSL package (libssl) doesn't include the .h files. For  that you need to install the development package (libssl-dev). The easiest way to install this package in Ubuntu is using Software Center tools, or cmd
+ 
+  	$apt-get upgrade openssl
+	$sudo apt-get install libssl-dev
+which would add the necessary functions and files on usr/include/   folder
+
+My Cisco Lab assistants, in EE490, should assist you if you need  more help installing libssl-dev.  
+
+==To compile file, say  ClientTCP_RejebPart2.c file for instance, use the cmd:
+
+  $ gcc -o user ClientTCP_RejebPart2.c  -lcrypto
+
+== When using  large numbers(practical), and depending on   the running complier and CPU machine, we often need to use big-digit library  so our c-compiler can efficiently handle these large integers.  More related  information and help on how to add this library  can be found at:
+   http://www.di-mgt.com.au/bigdigits.html
+Follow  the given directions to upload the library  and unzip its files in 
+            /usr/BIG 
+	(BIG  is a folder we created where to unzip these files)
+Call/refer to the BIG folder in your code header, which may look as below
+
+
+ 
+*/
+.....
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+//included for Lab2
+#include <BIG/bigd.h>
+#include <BIG/bigd.c>
+#include <BIG/bigdigits.h>
+#include <BIG/bigdigits.c>
+#include <openssl/des.h>
+#define ENC 1
+#define DEC 0
+//for Hash calculation
+#include <openssl/sha.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+
+ 
+******************************************************
+
+
+==The rest of this file provides  brief information on the functions that you  will be using. 
+You can find information on most of the built in functions we are using in the
+sample source codes at http://www.openssl.org/docs/crypto/crypto.html
+
+- AES_cbc_encrypt
+You will use a built in function called AES_cbc_encrypt to do the actual AES encryption / decryption.
+As a reference on how to use this function, you can view the file tempAES.c. Note, for this project you need only to use ECB mode.
+
+- AES_cbc_encrypt(const unsigned char *in, unsigned char *out, const unsigned long length, const AES_KEY *key,unsigned char *ivec, const int enc);
+
+        a. in: Pointer that will contain the data you will read from the file.
+	b. out: Pointer that will contain the output of AES_CBC encryption.
+	c. length: Specifies the length of the input.
+	d. key: Pointer to encryption/decryption key array.
+	e. ivec: Pointer to IV
+        f. enc: has a value of 1 for encryption and 0 for decryption. AES_ENCRYPT has the value 1 and AES_DECRYPT has the value 0.
+
+ECB mode:
+- AES_ecb_encrypt(const unsigned char *in, unsigned char *out, const AES_KEY *key, const int enc)
+	
+	a. in: Pointer that will contain the data you will read from the file.
+	b. out: Pointer that will contain the output of AES_CBC encryption.
+	c. key: Pointer to encryption/decryption key array.
+	d. enc: has a value of 1 for encryption and 0 for decryption. AES_ENCRYPT has the value 1 and AES_DECRYPT has the value 0.
+
+
+- AES_set_encrypt_key(const unsigned char *userKey, const int bits, AES_KEY *key);
+- AES_set_decrypt_key(const unsigned char *userKey, const int bits, AES_KEY *key);
+	Setting Encryption/Decryption key.
+
+	a. userkey: Key assigned by the User.
+	b. bits: Length of the key set.
+	c. key: Pointer to Key Set,based on the input key given by the user.
+
+- AES_encrypt(const unsigned char *in, unsigned char *out, const AES_KEY *key)
+- AES_decrypt(const unsigned char *in, unsigned char *out, const AES_KEY *key)
+
+	a. in: Pointer that will contain the data you will read from the file.
+	b. out: Pointer that will contain the output of AES_CBC encryption.
+	c. key: Pointer to encryption/decryption key array.
+
+
+- Sha1_Init
+This function will initialize some data structures necessary for the generation of the digest
+
+Sha1_Init(SHA_CTX *c)
+        a. c: initialize the SHA_CTX structure
+
+- Sha1_Update
+This function will be called repeatedly using a block of certain size that have been read from the input file,
+to generate the digest
+
+Sha1_Update(SHA_CTX *c, const void *data, unsigned long len)
+        a. c: pointer to the data structure initialized by SHA1_Init
+        b. data: buffer with the chunk of data to take the digest from
+        c: len: size of buffer with chunk of data
+
+- Sha1_Final
+This function will copy the resultant digest to an output buffer and will release any memory space used for the
+data structures created with SHA1_Init
+
+Sha1_Final(unsigned char *md, SHA_CTX *c)
+        a. md: output buffer
+        b. c: pointer to the data structure initialized by SHA1_Init

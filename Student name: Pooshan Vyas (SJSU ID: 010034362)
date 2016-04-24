@@ -1,0 +1,24 @@
+Student name: Pooshan Vyas (SJSU ID: 010034362)
+Student name: Yash Adukia (SJSU ID: 009988602)
+
+Project use python programming for both client and server
+Project perform with expected output and all requier conddirion and error handklig as mention in prof.'s note.
+
+In folder you will find the code and other reqiered data
+
+Steps to run the code:
+
+1. run Server file in terminal or pycharm -> pooshan.yash.part2ServerTCP
+2. run client file in terminal or pycharm -> pooshan.yash.part2ClientTCP.py
+3. At client side enter username: yash101 or pooshan101
+4. At client side enter password: hash
+5. Code has all comments and expanation possible
+6. Please keep helpMe.txt file in same folder to get proper result
+7. Out put is well mention with print stament and expected output steps
+8. Some of the print statments are for undersstanding of process.
+9. project successfully comple all requier and expected output with secure file transfer and integrity check.
+
+Let us know if you requier any other information reagding our project and result. 
+
+Thank you.
+
